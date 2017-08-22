@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Secury Files</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/"><i class="fa fa-lock"></i> SecuryFiles</a>
+      </div>
+    </nav>
+    <main class="container py-5">
+      <h1>Your files can be secury</h1>
+      <div class="row align-items-stretch mt-4">
+        <div class="col-12 col-md-6">
+          <div class="card h-100">
+            <div class="card-header text-white bg-success">Include files</div>
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label for="includeRecord">Record</label>
+                  <input class="form-control" id="includeRecord" placeholder="Record">
+                </div>
+                <div class="form-group">
+                  <label for="includePassword">Password</label>
+                  <input class="form-control" id="includePassword" type="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="includePassword">Files</label>
+                  <input class="form-control-file" id="includePassword" type="file">
+                </div>
+                <button type="submit" class="btn btn-success">Save</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="card h-100">
+            <div class="card-header text-white bg-primary">Get your files</div>
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label for="includeRecord">Record</label>
+                  <input class="form-control" id="includeRecord" placeholder="Record">
+                </div>
+                <div class="form-group">
+                  <label for="includePassword">Password</label>
+                  <input class="form-control" id="includePassword" type="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
