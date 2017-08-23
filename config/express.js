@@ -5,7 +5,7 @@ let bodyParser = require('body-parser');
 module.exports = function(){
   let app = express();
 
-  app.use(express.static('./app/assets'));
+  app.use(express.static('./app/assets/'));
   app.set('view engine', 'ejs');
   app.set('views', './app/views');
 
