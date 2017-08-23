@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <a class="navbar-brand" href="/"><i class="fa fa-lock"></i> SecuryFiles</a>
       </div>
@@ -19,18 +19,18 @@
           <div class="card h-100">
             <div class="card-header text-white bg-success">Include files</div>
             <div class="card-body">
-              <form>
+              <form method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                  <label for="includeRecord">Record</label>
-                  <input class="form-control" id="includeRecord" placeholder="Record">
+                  <label for="includePack">Pack</label>
+                  <input class="form-control" name="pack" id="includePack" placeholder="Pack">
                 </div>
                 <div class="form-group">
                   <label for="includePassword">Password</label>
-                  <input class="form-control" id="includePassword" type="password" placeholder="Password">
+                  <input class="form-control" name="password" id="includePassword" type="password" placeholder="Password">
                 </div>
                 <div class="form-group">
                   <label class="control-label" for="includePassword">Files</label>
-                  <input class="form-control-file" id="includePassword" type="file">
+                  <input class="form-control-file" multiple name="files" id="includePassword" type="file">
                 </div>
                 <button type="submit" class="btn btn-success">Save</button>
               </form>
@@ -41,16 +41,16 @@
           <div class="card h-100">
             <div class="card-header text-white bg-primary">Get your files</div>
             <div class="card-body">
-              <form>
+              <form action="files" method="post">
                 <div class="form-group">
-                  <label for="includeRecord">Record</label>
-                  <input class="form-control" id="includeRecord" placeholder="Record">
+                  <label for="includePack">Pack</label>
+                  <input class="form-control" name="pack" id="includePack" placeholder="Pack">
                 </div>
                 <div class="form-group">
                   <label for="includePassword">Password</label>
-                  <input class="form-control" id="includePassword" type="password" placeholder="Password">
+                  <input class="form-control" name="password" id="includePassword" type="password" placeholder="Password">
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Get</button>
               </form>
             </div>
           </div>
