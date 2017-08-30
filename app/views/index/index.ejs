@@ -57,13 +57,14 @@
         </div>
       </div>
       <% if(unencryptedFiles.length){ %>
+      <hr>
       <div class="mt-3">
         <h2>Unencrypted Files</h2>
         <div class="row">
           <div class="col">
             <ul class="list">
               <% unencryptedFiles.forEach(file => { %>
-              <li><a target="_blank" href="<%= file %>"><%= file %></a></li>
+              <li><a target="_blank" href="<%= file.dir %>"><%= file.name %></a></li>
               <% })%>
             </ul>
           </div>

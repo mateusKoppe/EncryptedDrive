@@ -27,7 +27,10 @@ module.exports = function(app) {
 		} else {
 			_unencryptFiles(pack, key, () => {
 				_readFiles(pack, (unencryptedFiles) => {
-					viewData.unencryptedFiles = unencryptedFiles;
+					viewData.unencryptedFiles = unencryptedFiles.map(file => ({
+						dir: file,
+						name: _getLastPiece('/', file),
+					}));
 					res.render('index/index', viewData);
 				});
 			});
@@ -82,7 +85,7 @@ module.exports = function(app) {
 				callback([]);
 				return;
 			}
-			files.forEach( (file, index) => {
+			files.forEach((file, index) => {
 				unencryptedFiles.push(`unencrypted/${pack}/${file}`);
 				if(index +1 === files.length){
 					callback(unencryptedFiles);
@@ -95,6 +98,10 @@ module.exports = function(app) {
 		if(!fs.existsSync(folder)){
 			fs.mkdirSync(folder);
 		}
+	}
+
+	function _getLastPiece(separator, value) {
+		return value.split(separator).reverse()[0];
 	}
 
 };
