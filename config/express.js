@@ -3,22 +3,22 @@ let load = require('express-load');
 let bodyParser = require('body-parser');
 
 module.exports = function(){
-  let app = express();
+	let app = express();
 
-  app.use(express.static('./app/assets/'));
-  app.set('view engine', 'ejs');
-  app.set('views', './app/views');
+	app.use(express.static('./static/'));
+	app.set('view engine', 'ejs');
+	app.set('views', './app/views');
 
-  app.use(bodyParser.urlencoded({extended: true}));
-  app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(bodyParser.json());
 
-  load('controllers', {
-    cwd: 'app'
-  })
-    .then('services', {
-      cwd: 'app'
-    })
-    .into(app)
+	load('controllers', {
+		cwd: 'app'
+	})
+		.then('services', {
+			cwd: 'app'
+		})
+		.into(app);
 
-  return app;
-}
+	return app;
+};

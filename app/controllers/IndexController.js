@@ -6,44 +6,95 @@ let md5 = require('md5');
 
 module.exports = function(app) {
 
-  app.get('/', (req, res) => {
-    res.render('index/index', {unencryptedFiles: []});
-  })
+	app.get('/', (req, res) => {
+		res.render('index/index', {
+			unencryptedFiles: []
+		});
+	});
 
-  app.post('/', upload.array('files'), (req, res) => {
-    let pack = md5(req.body.pack);
-    let key = md5(req.body.password);
-    req.files.forEach(file => {
-      let extension = file.originalname.split(".").reverse()[0];
-      if(!fs.existsSync(`./encrypted/${pack}`)){
-        fs.mkdirSync(`./encrypted/${pack}`);
-      }
-      fs.rename(`./temp/${file.filename}`, `./encrypted/${pack}/${file.originalname}`);
-      encryptor.encryptFile(`./encrypted/${pack}/${file.originalname}`, `./encrypted/${pack}/${md5(file.originalname)}.${extension}`, key, () => {});
-      fs.unlink(`./encrypted/${pack}/${file.originalname}`);
-    });
-    res.render('index/index', {unencryptedFiles: []});
-  })
+	app.post('/', upload.array('files'), (req, res) => {
+		const pack = md5(req.body.pack);
+		const key = md5(req.body.password);
 
-  app.post('/files', (req, res) => {
-    let pack = md5(req.body.pack);
-    let key = md5(req.body.password);
-    let unencryptedFiles = [];
-    if(!fs.existsSync(`./app/assets/unencrypted/${pack}`)){
-      fs.mkdirSync(`./app/assets/unencrypted/${pack}`);
-    }
-    fs.readdir(`./encrypted/${pack}/`, (err, data) => {
-      encryptor.decryptFile(`./encrypted/${pack}/${data}`, `./app/assets/unencrypted/${pack}/${data}`, key, (err) => {
-        fs.readdir(`./app/assets/unencrypted/${pack}/`, (err, files) => {
-          files.forEach(file => {
-            unencryptedFiles.push(`./unencrypted/${pack}/${file}`);
-            console.log(unencryptedFiles);
-          })
-          res.render('index/index', {
-            unencryptedFiles: unencryptedFiles
-          });
-        })
-      });
-    })
-  })
-}
+		let viewData = {
+			unencryptedFiles: [],
+		};
+
+		if(req.files){
+			_encryptFiles(req.files, pack, key, () => {
+				res.render('index/index', viewData);
+			});
+		} else {
+			_unencryptFiles(pack, key, () => {
+				_readFiles(pack, (unencryptedFiles) => {
+					viewData.unencryptedFiles = unencryptedFiles;
+					res.render('index/index', viewData);
+				});
+			});
+		}
+
+	});
+
+	function _encryptFiles(files, pack, key, callback){
+		files.forEach((file, index) => {
+			const encryptDir = `./encrypted/${pack}`;
+			encryptor.encryptFile(
+				`./temp/${file.filename}`,
+				`${encryptDir}/${file.originalname}`,
+				key,
+				() => {
+					fs.unlink(`./temp/${file.filename}`);
+					if(index +1 === files.length){
+						callback();
+					}
+				}
+			);
+		});
+	}
+
+	function _unencryptFiles(pack, key, callback){
+		const encryptedFiles = `./encrypted/${pack}`;
+		const unencryptedFiles = `./static/unencrypted/${pack}`;
+		fs.readdir(encryptedFiles, (err, files) => {
+
+			if(!files){
+				callback();
+				return;
+			}
+
+			_createFoldeIfNotExist(unencryptedFiles);
+
+			files.forEach( (item, index) => {
+				encryptor.decryptFile(`${encryptedFiles}/${item}`, `${unencryptedFiles}/${item}`, key, () => {
+					if(index + 1 === files.length){
+						callback();
+					}
+				});
+			});
+		});
+	}
+
+	function _readFiles(pack, callback){
+		const filesDir = `./static/unencrypted/${pack}/`;
+		let unencryptedFiles = [];
+		fs.readdir(filesDir, (err, files) => {
+			if(!files.length){
+				callback([]);
+				return;
+			}
+			files.forEach( (file, index) => {
+				unencryptedFiles.push(`unencrypted/${pack}/${file}`);
+				if(index +1 === files.length){
+					callback(unencryptedFiles);
+				}
+			});
+		});
+	}
+
+	function _createFoldeIfNotExist(folder) {
+		if(!fs.existsSync(folder)){
+			fs.mkdirSync(folder);
+		}
+	}
+
+};
