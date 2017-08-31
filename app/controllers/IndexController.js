@@ -41,6 +41,7 @@ module.exports = function(app) {
 	function _encryptFiles(files, pack, key, callback){
 		files.forEach((file, index) => {
 			const encryptDir = `./encrypted/${pack}`;
+			_createFoldeIfNotExist(encryptDir);
 			encryptor.encryptFile(
 				`./temp/${file.filename}`,
 				`${encryptDir}/${file.originalname}`,
