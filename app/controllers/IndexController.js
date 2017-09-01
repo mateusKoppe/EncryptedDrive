@@ -1,6 +1,7 @@
 let multer = require('multer');
 let upload = multer({dest: 'temp/'});
 let encryptor = require('file-encryptor');
+let Cryptr = require('cryptr');
 let fs = require('fs');
 let md5 = require('md5');
 
@@ -41,10 +42,12 @@ module.exports = function(app) {
 	function _encryptFiles(files, pack, key, callback){
 		files.forEach((file, index) => {
 			const encryptDir = `./encrypted/${pack}`;
+			const cryptr = new Cryptr(key);
+			let fileName = cryptr.encrypt(file.originalname);
 			_createFoldeIfNotExist(encryptDir);
 			encryptor.encryptFile(
 				`./temp/${file.filename}`,
-				`${encryptDir}/${file.originalname}`,
+				`${encryptDir}/${fileName}`,
 				key,
 				() => {
 					fs.unlink(`./temp/${file.filename}`);
@@ -69,7 +72,9 @@ module.exports = function(app) {
 			_createFoldeIfNotExist(unencryptedFiles);
 
 			files.forEach( (item, index) => {
-				encryptor.decryptFile(`${encryptedFiles}/${item}`, `${unencryptedFiles}/${item}`, key, () => {
+				const cryptr = new Cryptr(key);
+				const decryptedFileName = cryptr.decrypt(item);
+				encryptor.decryptFile(`${encryptedFiles}/${item}`, `${unencryptedFiles}/${decryptedFileName}`, key, () => {
 					if(index + 1 === files.length){
 						callback();
 					}
