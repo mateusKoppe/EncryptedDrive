@@ -12,10 +12,10 @@ module.exports = function(){
 	app.use(bodyParser.urlencoded({extended: true}));
 	app.use(bodyParser.json());
 
-	load('controllers', {
+	load('services', {
 		cwd: 'app'
 	})
-		.then('services', {
+		.then('controllers', {
 			cwd: 'app'
 		})
 		.into(app);
