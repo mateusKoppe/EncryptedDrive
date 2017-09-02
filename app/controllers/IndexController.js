@@ -5,20 +5,16 @@ const EncryptPack = require('../services/encryptPack');
 module.exports = function(app) {
 
 	app.get('/', (req, res) => {
-
 		if((req.session.pack) && (req.session.key)){
 			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
-			encryptPack.getDencrypt(unencryptedFiles => {
-				_renderIndex(unencryptedFiles.map(_formatFileView));
+			encryptPack.getDencrypt(decryptedFiles => {
+				res.render('files-manager', {
+					decryptedFiles: decryptedFiles.map(_formatFileView)
+				});
 			});
 		} else {
-			_renderIndex();
+			res.render('index');
 		}
-
-		function _renderIndex(unencryptedFiles = []) {
-			res.render('index', {unencryptedFiles});
-		}
-
 	});
 
 	app.post('/', upload.array('files'), (req, res) => {
