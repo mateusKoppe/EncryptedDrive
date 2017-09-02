@@ -19,7 +19,8 @@ module.exports = function () {
 			readFiles,
 			encrypt,
 			decrypt,
-			getDencrypt
+			deleteDecryptedFiles,
+			getDencrypt,
 		};
 
 		return factory;
@@ -83,6 +84,14 @@ module.exports = function () {
 			});
 		}
 
+		function deleteDecryptedFiles(callback) {
+			readFiles(files => {
+				files.forEach(file =>fs.unlinkSync(file));
+				fs.rmdirSync(`${unencryptDir}/${pack}`);
+				callback();
+			});
+		}
+
 		function getDencrypt (callback) {
 			decrypt(() => {
 				readFiles(callback);
@@ -94,5 +103,6 @@ module.exports = function () {
 				fs.mkdirSync(folder);
 			}
 		}
+
 	};
 };
