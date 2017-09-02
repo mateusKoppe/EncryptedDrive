@@ -23,38 +23,16 @@ module.exports = class EncryptPack{
 		return `${this.encryptDir}/${this._pack}`;
 	}
 
+	get decryptedPack() {
+		return `${this.decryptDir}/${this._pack}`;
+	}
+
 	getDecryptedFiles (callback) {
-		const filesDir = `${this.decryptDir}/${this._pack}`;
-		let decryptedFiles = [];
-		fs.readdir(filesDir, (err, files) => {
-			if(!files || !files.length){
-				callback ? callback([]) : null;
-				return;
-			}
-			files.forEach((file, index) => {
-				decryptedFiles.push(`${filesDir}/${file}`);
-				if(index +1 === files.length){
-					callback ? callback(decryptedFiles) : null;
-				}
-			});
-		});
+		this._getFilesInFolder(this.decryptedPack, callback);
 	}
 
 	getEncryptedFiles (callback) {
-		const filesDir = `${this.encryptDir}/${this._pack}`;
-		let encryptedFiles = [];
-		fs.readdir(filesDir, (err, files) => {
-			if(!files || !files.length){
-				callback ? callback([]) : null;
-				return;
-			}
-			files.forEach((file, index) => {
-				encryptedFiles.push(`${filesDir}/${file}`);
-				if(index +1 === files.length){
-					callback ? callback(encryptedFiles) : null;
-				}
-			});
-		});
+		this._getFilesInFolder(this.encryptedPack, callback);
 	}
 
 	encrypt (files, callback) {
@@ -112,6 +90,20 @@ module.exports = class EncryptPack{
 		this.decrypt(() => {
 			this.getDecryptedFiles(callback);
 		});
+	}
+
+	_getFilesInFolder(folder, callback) {
+		let decryptedFiles = [];
+		let files = [];
+		if(fs.existsSync(folder)){
+			files = fs.readdirSync(folder);
+		}
+		if(files && files.length){
+			files.forEach(file => {
+				decryptedFiles.push(`${folder}/${file}`);
+			});
+		}
+		callback ? callback(decryptedFiles) : null;
 	}
 
 	_createFolderIfNotExist(folder) {
