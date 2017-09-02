@@ -1,12 +1,13 @@
 const upload = require('multer')({dest: 'temp/'});
 const md5 = require('md5');
+const EncryptPack = require('../services/encryptPack');
 
 module.exports = function(app) {
 
 	app.get('/', (req, res) => {
 
 		if((req.session.pack) && (req.session.password)){
-			const encryptPack = app.services.encryptPack(req.session.pack, req.session.password);
+			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
 			encryptPack.getDencrypt(unencryptedFiles => {
 				_renderIndex(unencryptedFiles.map(_formatFileView));
 			});
@@ -25,7 +26,7 @@ module.exports = function(app) {
 		req.session.password = md5(req.body.password);
 
 		if(req.files){
-			const encryptPack = app.services.encryptPack(req.session.pack, req.session.password);
+			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
 			encryptPack.encrypt(req.files, () => {
 				res.redirect('/');
 			});
@@ -36,7 +37,7 @@ module.exports = function(app) {
 
 	app.get('/encrypt-pack', (req, res) => {
 		if((req.session.pack) && (req.session.password)){
-			const encryptPack = app.services.encryptPack(req.session.pack, req.session.password);
+			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
 			encryptPack.deleteDecryptedFiles(() => {
 				_deleteSessionPack(req);
 				res.redirect('/');

@@ -18,12 +18,9 @@ module.exports = function(){
 		resave: false
 	}));
 
-	load('services', {
+	load('controllers', {
 		cwd: 'app'
 	})
-		.then('controllers', {
-			cwd: 'app'
-		})
 		.into(app);
 
 	return app;
