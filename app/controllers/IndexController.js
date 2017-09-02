@@ -17,18 +17,18 @@ module.exports = function(app) {
 		}
 	});
 
-	app.post('/', upload.array('files'), (req, res) => {
+	app.post('/access-path', (req, res) => {
 		req.session.pack = md5(req.body.pack);
 		req.session.key = md5(req.body.key);
 
-		if(req.files){
-			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
-			encryptPack.encrypt(req.files, () => {
-				res.redirect('/');
-			});
-		}else{
+		res.redirect('/');
+	});
+
+	app.post('/add-files', (upload.array('files')), (req, res) => {
+		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
+		encryptPack.encrypt(req.files, () => {
 			res.redirect('/');
-		}
+		});
 	});
 
 	app.get('/encrypt-pack', (req, res) => {

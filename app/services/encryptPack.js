@@ -28,13 +28,13 @@ module.exports = class EncryptPack{
 		let decryptedFiles = [];
 		fs.readdir(filesDir, (err, files) => {
 			if(!files || !files.length){
-				callback([]);
+				callback ? callback([]) : null;
 				return;
 			}
 			files.forEach((file, index) => {
 				decryptedFiles.push(`${filesDir}/${file}`);
 				if(index +1 === files.length){
-					callback(decryptedFiles);
+					callback ? callback(decryptedFiles) : null;
 				}
 			});
 		});
@@ -45,23 +45,23 @@ module.exports = class EncryptPack{
 		let encryptedFiles = [];
 		fs.readdir(filesDir, (err, files) => {
 			if(!files || !files.length){
-				callback([]);
+				callback ? callback([]) : null;
 				return;
 			}
 			files.forEach((file, index) => {
 				encryptedFiles.push(`${filesDir}/${file}`);
 				if(index +1 === files.length){
-					callback(encryptedFiles);
+					callback ? callback(encryptedFiles) : null;
 				}
 			});
 		});
 	}
 
 	encrypt (files, callback) {
+		this._createFolderIfNotExist(this.encryptedPack);
 		files.forEach((file, index) => {
 			const cryptr = new Cryptr(this._key);
 			let fileName = cryptr.encrypt(file.originalname);
-			this._createFolderIfNotExist(this.encryptedPack);
 			encryptor.encryptFile(
 				`./temp/${file.filename}`,
 				`${this.encryptedPack}/${fileName}`,
@@ -69,7 +69,7 @@ module.exports = class EncryptPack{
 				() => {
 					fs.unlink(`./temp/${file.filename}`);
 					if(index +1 === files.length){
-						callback();
+						callback ? callback() : null;
 					}
 				}
 			);
@@ -81,18 +81,17 @@ module.exports = class EncryptPack{
 		fs.readdir(this.encryptedPack, (err, files) => {
 
 			if(!files || !files.length){
-				callback();
+				callback ? callback() : null;
 				return;
 			}
 
 			this._createFolderIfNotExist(unencryptedFiles);
-
 			files.forEach( (item, index) => {
 				const cryptr = new Cryptr(this._key);
 				const decryptedFileName = cryptr.decrypt(item);
 				encryptor.decryptFile(`${this.encryptedPack}/${item}`, `${unencryptedFiles}/${decryptedFileName}`, this._key, () => {
 					if(index + 1 === files.length){
-						callback();
+						callback ? callback() : null;
 					}
 				});
 			});
@@ -100,20 +99,12 @@ module.exports = class EncryptPack{
 	}
 
 	deleteDecryptedFiles(callback) {
-		this.getDecryptedFiles(files => {
-			files.forEach(file => fs.unlinkSync(file));
-			fs.rmdirSync(`${this.decryptDir}/${this._pack}`);
-			callback();
-		});
+		this._removeRecursiveFolder(`${this.decryptDir}/${this._pack}`, callback);
 	}
 
 	deleteEncryptedFiles(callback){
 		this.deleteDecryptedFiles(() => {
-			this.getEncryptedFiles(files => {
-				files.forEach(file => fs.unlinkSync(file));
-				fs.rmdirSync(`${this.encryptDir}/${this._pack}`);
-				callback();
-			});
+			this._removeRecursiveFolder(`${this.encryptDir}/${this._pack}`, callback);
 		});
 	}
 
@@ -127,6 +118,18 @@ module.exports = class EncryptPack{
 		if(!fs.existsSync(folder)){
 			fs.mkdirSync(folder);
 		}
+	}
+
+	_removeRecursiveFolder(folder, callback) {
+		fs.readdir(folder, (err, files) => {
+			if(files && files.length){
+				files.forEach(file => fs.unlinkSync(file));
+			}
+			if(fs.existsSync(folder)){
+				fs.rmdirSync(folder);
+			}
+			callback ? callback() : null;
+		});
 	}
 
 };
