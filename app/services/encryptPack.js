@@ -123,7 +123,7 @@ module.exports = class EncryptPack{
 	_removeRecursiveFolder(folder, callback) {
 		fs.readdir(folder, (err, files) => {
 			if(files && files.length){
-				files.forEach(file => fs.unlinkSync(file));
+				files.forEach(file => fs.unlinkSync(`${folder}/${file}`));
 			}
 			if(fs.existsSync(folder)){
 				fs.rmdirSync(folder);
