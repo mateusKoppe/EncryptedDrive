@@ -8,7 +8,7 @@ module.exports = class EncryptPack{
 		this._pack = pack;
 		this._key = key;
 		this.encryptDir = './encrypted';
-		this.unencryptDir = './static/unencrypted';
+		this.decryptDir = './static/unencrypted';
 	}
 
 	set pack(value) {
@@ -23,18 +23,35 @@ module.exports = class EncryptPack{
 		return `${this.encryptDir}/${this._pack}`;
 	}
 
-	readFiles (callback) {
-		const filesDir = `${this.unencryptDir}/${this._pack}/`;
-		let unencryptedFiles = [];
+	getDecryptedFiles (callback) {
+		const filesDir = `${this.decryptDir}/${this._pack}`;
+		let decryptedFiles = [];
 		fs.readdir(filesDir, (err, files) => {
 			if(!files || !files.length){
 				callback([]);
 				return;
 			}
 			files.forEach((file, index) => {
-				unencryptedFiles.push(`${filesDir}/${file}`);
+				decryptedFiles.push(`${filesDir}/${file}`);
 				if(index +1 === files.length){
-					callback(unencryptedFiles);
+					callback(decryptedFiles);
+				}
+			});
+		});
+	}
+
+	getEncryptedFiles (callback) {
+		const filesDir = `${this.encryptDir}/${this._pack}`;
+		let encryptedFiles = [];
+		fs.readdir(filesDir, (err, files) => {
+			if(!files || !files.length){
+				callback([]);
+				return;
+			}
+			files.forEach((file, index) => {
+				encryptedFiles.push(`${filesDir}/${file}`);
+				if(index +1 === files.length){
+					callback(encryptedFiles);
 				}
 			});
 		});
@@ -60,10 +77,10 @@ module.exports = class EncryptPack{
 	}
 
 	decrypt (callback) {
-		const unencryptedFiles = `${this.unencryptDir}/${this._pack}`;
+		const unencryptedFiles = `${this.decryptDir}/${this._pack}`;
 		fs.readdir(this.encryptedPack, (err, files) => {
 
-			if(!files){
+			if(!files || !files.length){
 				callback();
 				return;
 			}
@@ -83,16 +100,26 @@ module.exports = class EncryptPack{
 	}
 
 	deleteDecryptedFiles(callback) {
-		this.readFiles(files => {
-			files.forEach(file =>fs.unlinkSync(file));
-			fs.rmdirSync(`${this.unencryptDir}/${this._pack}`);
+		this.getDecryptedFiles(files => {
+			files.forEach(file => fs.unlinkSync(file));
+			fs.rmdirSync(`${this.decryptDir}/${this._pack}`);
 			callback();
+		});
+	}
+
+	deleteEncryptedFiles(callback){
+		this.deleteDecryptedFiles(() => {
+			this.getEncryptedFiles(files => {
+				files.forEach(file => fs.unlinkSync(file));
+				fs.rmdirSync(`${this.encryptDir}/${this._pack}`);
+				callback();
+			});
 		});
 	}
 
 	getDencrypt (callback) {
 		this.decrypt(() => {
-			this.readFiles(callback);
+			this.getDecryptedFiles(callback);
 		});
 	}
 

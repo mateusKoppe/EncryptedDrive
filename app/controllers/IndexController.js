@@ -42,6 +42,18 @@ module.exports = function(app) {
 				_deleteSessionPack(req);
 				res.redirect('/');
 			});
+		} else {
+			res.redirect('/');
+		}
+	});
+
+	app.get('/delete-pack', (req, res) => {
+		if((req.session.pack) && (req.session.password)){
+			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
+			encryptPack.deleteEncryptedFiles(() => {
+				_deleteSessionPack(req);
+				res.redirect('/');
+			});
 		}
 	});
 
