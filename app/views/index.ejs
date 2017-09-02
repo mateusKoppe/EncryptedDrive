@@ -2,55 +2,45 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Secury Files</title>
+    <title>Encrypted Drive</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="/"><i class="fa fa-lock"></i> SecuryFiles</a>
+        <a class="navbar-brand" href="/"><i class="fa fa-lock"></i> EncryptedDrive</a>
       </div>
     </nav>
     <main class="container py-5">
-      <h1>Your files can be secury</h1>
       <div class="row align-items-stretch mt-4">
         <div class="col-12 col-md-6">
-          <div class="card h-100">
-            <div class="card-header text-white bg-success">Include files</div>
-            <div class="card-body">
-              <form method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                  <label for="includePack">Pack</label>
-                  <input class="form-control" name="pack" id="includePack" placeholder="Pack">
-                </div>
-                <div class="form-group">
-                  <label for="includePassword">Password</label>
-                  <input class="form-control" name="password" id="includePassword" type="password" placeholder="Password">
-                </div>
-                <div class="form-group">
-                  <label class="control-label" for="includePassword">Files</label>
-                  <input class="form-control-file" multiple name="files" id="includePassword" type="file">
-                </div>
-                <button type="submit" class="btn btn-success">Save</button>
-              </form>
-            </div>
-          </div>
+          <h1>Your files anonymous</h1>
+          <ul>
+            <li>No register</li>
+            <li>No login</li>
+            <li>No email authentication</li>
+            <li>You define the key and the pack</li>
+            <li>Enter pack and key to access</li>
+          </ul>
         </div>
         <div class="col-12 col-md-6">
           <div class="card h-100">
-            <div class="card-header text-white bg-primary">Get your files</div>
+            <div class="card-header text-white bg-success">Get your files</div>
             <div class="card-body">
+              <p>Set strong's key and pack name.</p>
               <form method="post">
                 <div class="form-group">
                   <label for="includePack">Pack</label>
                   <input class="form-control" name="pack" id="includePack" placeholder="Pack">
                 </div>
                 <div class="form-group">
-                  <label for="includePassword">Password</label>
-                  <input class="form-control" name="password" id="includePassword" type="password" placeholder="Password">
+                  <label for="includeKey">Key</label>
+                  <input class="form-control" name="key" id="includeKey" type="password" placeholder="Key">
                 </div>
-                <button type="submit" class="btn btn-primary">Get</button>
+                <div class="d-flex justify-content-between flex-column flex-lg-row">
+                  <button type="submit" class="btn btn-success my-1">Enter</button>
+                </div>
               </form>
             </div>
           </div>

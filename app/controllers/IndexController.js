@@ -6,8 +6,8 @@ module.exports = function(app) {
 
 	app.get('/', (req, res) => {
 
-		if((req.session.pack) && (req.session.password)){
-			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
+		if((req.session.pack) && (req.session.key)){
+			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 			encryptPack.getDencrypt(unencryptedFiles => {
 				_renderIndex(unencryptedFiles.map(_formatFileView));
 			});
@@ -23,10 +23,10 @@ module.exports = function(app) {
 
 	app.post('/', upload.array('files'), (req, res) => {
 		req.session.pack = md5(req.body.pack);
-		req.session.password = md5(req.body.password);
+		req.session.key = md5(req.body.key);
 
 		if(req.files){
-			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
+			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 			encryptPack.encrypt(req.files, () => {
 				res.redirect('/');
 			});
@@ -36,8 +36,8 @@ module.exports = function(app) {
 	});
 
 	app.get('/encrypt-pack', (req, res) => {
-		if((req.session.pack) && (req.session.password)){
-			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
+		if((req.session.pack) && (req.session.key)){
+			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 			encryptPack.deleteDecryptedFiles(() => {
 				_deleteSessionPack(req);
 				res.redirect('/');
@@ -48,8 +48,8 @@ module.exports = function(app) {
 	});
 
 	app.get('/delete-pack', (req, res) => {
-		if((req.session.pack) && (req.session.password)){
-			const encryptPack = new EncryptPack(req.session.pack, req.session.password);
+		if((req.session.pack) && (req.session.key)){
+			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 			encryptPack.deleteEncryptedFiles(() => {
 				_deleteSessionPack(req);
 				res.redirect('/');
