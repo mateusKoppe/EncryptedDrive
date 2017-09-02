@@ -1,29 +1,36 @@
-const multer = require('multer');
-const upload = multer({dest: 'temp/'});
+const upload = require('multer')({dest: 'temp/'});
+const md5 = require('md5');
 
 module.exports = function(app) {
 
 	app.get('/', (req, res) => {
-		res.render('index/index', {
-			unencryptedFiles: []
-		});
+
+		if((req.session.pack) && (req.session.password)){
+			const encryptPack = app.services.encryptPack(req.session.pack, req.session.password);
+			encryptPack.getDencrypt(unencryptedFiles => {
+				_renderIndex(unencryptedFiles.map(_formatFileView));
+			});
+		} else {
+			_renderIndex();
+		}
+
+		function _renderIndex(unencryptedFiles = []) {
+			res.render('index/index', {unencryptedFiles});
+		}
+
 	});
 
 	app.post('/', upload.array('files'), (req, res) => {
-		const encryptPack = app.services.encryptPack(req.body.pack, req.body.password);
-		let viewData = {
-			unencryptedFiles: [],
-		};
+		req.session.pack = md5(req.body.pack);
+		req.session.password = md5(req.body.password);
 
 		if(req.files){
+			const encryptPack = app.services.encryptPack(req.body.pack, req.body.password);
 			encryptPack.encrypt(req.files, () => {
-				res.render('index/index', viewData);
+				res.redirect('/');
 			});
-		} else {
-			encryptPack.getDencrypt(unencryptedFiles => {
-				viewData.unencryptedFiles = unencryptedFiles.map(_formatFileView);
-				res.render('index/index', viewData);
-			});
+		}else{
+			res.redirect('/');
 		}
 	});
 

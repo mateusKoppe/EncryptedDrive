@@ -1,7 +1,6 @@
 const encryptor = require('file-encryptor');
 const Cryptr = require('cryptr');
 const fs = require('fs');
-const md5 = require('md5');
 
 module.exports = function () {
 	return function (pack = '', key = '') {
@@ -9,16 +8,13 @@ module.exports = function () {
 		let unencryptDir = './static/unencrypted';
 		let encryptedPack = `${encryptDir}/${pack}`;
 
-		pack = md5(pack);
-		key = md5(key);
-
 		let factory = {
 			set pack(value) {
-				pack = md5(value);
+				pack = value;
 				encryptedPack = `${encryptDir}/${pack}`;
 			},
 			set key(value) {
-				key = md5(value);
+				key = value;
 			},
 			readFiles,
 			encrypt,
