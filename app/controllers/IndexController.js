@@ -60,7 +60,7 @@ module.exports = function(app) {
 
 	function _formatFileView(file) {
 		return {
-			dir: file,
+			dir: file.split('/').slice(2).join('/'),
 			name: _getLastPiece('/', file),
 		};
 	}

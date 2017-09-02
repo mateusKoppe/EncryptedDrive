@@ -1,6 +1,7 @@
 const encryptor = require('file-encryptor');
 const Cryptr = require('cryptr');
 const fs = require('fs');
+const md5 = require('md5');
 
 module.exports = class EncryptPack{
 
@@ -24,7 +25,8 @@ module.exports = class EncryptPack{
 	}
 
 	get decryptedPack() {
-		return `${this.decryptDir}/${this._pack}`;
+		let folderName = md5(this._pack + this._key);
+		return `${this.decryptDir}/${folderName}`;
 	}
 
 	getDecryptedFiles (callback) {
@@ -55,7 +57,6 @@ module.exports = class EncryptPack{
 	}
 
 	decrypt (callback) {
-		const unencryptedFiles = `${this.decryptDir}/${this._pack}`;
 		fs.readdir(this.encryptedPack, (err, files) => {
 
 			if(!files || !files.length){
@@ -63,11 +64,11 @@ module.exports = class EncryptPack{
 				return;
 			}
 
-			this._createFolderIfNotExist(unencryptedFiles);
+			this._createFolderIfNotExist(this.decryptedPack);
 			files.forEach( (item, index) => {
 				const cryptr = new Cryptr(this._key);
 				const decryptedFileName = cryptr.decrypt(item);
-				encryptor.decryptFile(`${this.encryptedPack}/${item}`, `${unencryptedFiles}/${decryptedFileName}`, this._key, () => {
+				encryptor.decryptFile(`${this.encryptedPack}/${item}`, `${this.decryptedPack}/${decryptedFileName}`, this._key, () => {
 					if(index + 1 === files.length){
 						callback ? callback() : null;
 					}
