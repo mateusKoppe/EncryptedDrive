@@ -16,7 +16,7 @@ module.exports = function(app) {
 		}
 
 		function _renderIndex(unencryptedFiles = []) {
-			res.render('index/index', {unencryptedFiles});
+			res.render('index', {unencryptedFiles});
 		}
 
 	});
