@@ -40,6 +40,10 @@ module.exports = class EncryptPack{
 
 	encrypt (files, callback) {
 		this._createFolderIfNotExist(this.encryptedPack);
+		if(!files || !files.length){
+			callback ? callback() : null;
+			return;
+		}
 		files.forEach((file, index) => {
 			const cryptr = new Cryptr(this._key);
 			let fileName = cryptr.encrypt(file.originalname);
