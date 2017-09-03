@@ -95,15 +95,30 @@ module.exports = class EncryptPack{
 	deleteFileInPack(file, callback) {
 		const cryptr = new Cryptr(this._key);
 		let fileNameEncrypted = cryptr.encrypt(file);
-		fs.unlinkSync(`${this.decryptedPack}/${file}`);
+		this._deleteDecryptedFile(file);
 		fs.unlinkSync(`${this.encryptedPack}/${fileNameEncrypted}`);
 		callback();
 	}
 
-	getDencrypt (callback) {
+	renameFile(fileName, newName, callback) {
+		const cryptr = new Cryptr(this._key);
+		this._deleteDecryptedFile(fileName);
+		let fileNameEncrypted = cryptr.encrypt(fileName);
+		let newFileNameEncrypted = cryptr.encrypt(newName);
+		fs.renameSync(`${this.encryptedPack}/${fileNameEncrypted}`, `${this.encryptedPack}/${newFileNameEncrypted}`);
+		callback ? callback() : null;
+	}
+
+	getDencrypt(callback) {
 		this.decrypt(() => {
 			this.getDecryptedFiles(callback);
 		});
+	}
+
+	/* Private function */
+
+	_deleteDecryptedFile(file) {
+		fs.unlinkSync(`${this.decryptedPack}/${file}`);
 	}
 
 	_getFilesInFolder(folder, callback) {

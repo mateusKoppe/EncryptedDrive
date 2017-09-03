@@ -17,23 +17,9 @@ module.exports = function(app) {
 		}
 	});
 
-	app.post('/access-path', (req, res) => {
-		req.session.pack = md5(req.body.pack);
-		req.session.key = md5(req.body.key);
-
-		res.redirect('/');
-	});
-
 	app.get('/delete-file/:fileName', (req, res) => {
 		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 		encryptPack.deleteFileInPack(req.params.fileName, () => {
-			res.redirect('/');
-		});
-	});
-
-	app.post('/add-files', (upload.array('files')), (req, res) => {
-		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
-		encryptPack.encrypt(req.files, () => {
 			res.redirect('/');
 		});
 	});
@@ -58,6 +44,29 @@ module.exports = function(app) {
 				res.redirect('/');
 			});
 		}
+	});
+
+	app.post('/access-path', (req, res) => {
+		req.session.pack = md5(req.body.pack);
+		req.session.key = md5(req.body.key);
+
+		res.redirect('/');
+	});
+
+	app.post('/add-files', (upload.array('files')), (req, res) => {
+		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
+		encryptPack.encrypt(req.files, () => {
+			res.redirect('/');
+		});
+	});
+
+	app.post('/rename-file', (req, res) => {
+		let fileName = req.body.oldFileName;
+		let	newFileName = req.body.newFileName;
+		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
+		encryptPack.renameFile(fileName, newFileName, () => {
+			res.redirect('/');
+		});
 	});
 
 	function _deleteSessionPack(req) {

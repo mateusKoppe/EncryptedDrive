@@ -3,17 +3,26 @@
 }
 
 .card-file-settings{
+	background-color: rgba(0, 0, 0, .1);
+	border: 1px solid #ddd;
+	cursor: pointer;
+	display: inline-block;
 	font-size: 1.3em;
+	height: 35px;
 	right: 0;
+	padding: 0;
 	position: absolute;
 	top: 0;
+	width: 35px;
 	transform: scale(0);
 	transition: .2s all ease;
 }
 
+.card-file-settings:hover{
+	background-color: rgba(0, 0, 0, .2);
+}
+
 .card-file:hover .card-file-settings,
 .card-file:focus .card-file-settings{
-	right: 15px;
-	top: 15px;
 	transform: scale(1);
 }
