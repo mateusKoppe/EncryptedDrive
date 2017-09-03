@@ -21,7 +21,8 @@ module.exports = class EncryptPack{
 	}
 
 	get encryptedPack() {
-		return `${this.encryptDir}/${this._pack}`;
+		let folderName = md5(this._pack + this._key);
+		return `${this.encryptDir}/${folderName}`;
 	}
 
 	get decryptedPack() {
@@ -83,7 +84,7 @@ module.exports = class EncryptPack{
 
 	deleteEncryptedFiles(callback){
 		this.deleteDecryptedFiles(() => {
-			this._removeRecursiveFolder(`${this.encryptDir}/${this._pack}`, callback);
+			this._removeRecursiveFolder(this.encryptedPack, callback);
 		});
 	}
 
