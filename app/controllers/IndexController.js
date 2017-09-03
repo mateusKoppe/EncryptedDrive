@@ -24,6 +24,13 @@ module.exports = function(app) {
 		res.redirect('/');
 	});
 
+	app.get('/delete-file/:fileName', (req, res) => {
+		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
+		encryptPack.deleteFileInPack(req.params.fileName, () => {
+			res.redirect('/');
+		});
+	});
+
 	app.post('/add-files', (upload.array('files')), (req, res) => {
 		const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 		encryptPack.encrypt(req.files, () => {

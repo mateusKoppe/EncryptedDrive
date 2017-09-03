@@ -86,10 +86,18 @@ module.exports = class EncryptPack{
 		this._removeRecursiveFolder(this.decryptedPack, callback);
 	}
 
-	deleteEncryptedFiles(callback){
+	deleteEncryptedFiles(callback) {
 		this.deleteDecryptedFiles(() => {
 			this._removeRecursiveFolder(this.encryptedPack, callback);
 		});
+	}
+
+	deleteFileInPack(file, callback) {
+		const cryptr = new Cryptr(this._key);
+		let fileNameEncrypted = cryptr.encrypt(file);
+		fs.unlinkSync(`${this.decryptedPack}/${file}`);
+		fs.unlinkSync(`${this.encryptedPack}/${fileNameEncrypted}`);
+		callback();
 	}
 
 	getDencrypt (callback) {
