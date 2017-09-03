@@ -78,7 +78,7 @@ module.exports = class EncryptPack{
 	}
 
 	deleteDecryptedFiles(callback) {
-		this._removeRecursiveFolder(`${this.decryptDir}/${this._pack}`, callback);
+		this._removeRecursiveFolder(this.decryptedPack, callback);
 	}
 
 	deleteEncryptedFiles(callback){
