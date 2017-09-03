@@ -31,7 +31,7 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/encrypt-pack', (req, res) => {
+	app.get('/encrypt-folder', (req, res) => {
 		if((req.session.pack) && (req.session.key)){
 			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 			encryptPack.deleteDecryptedFiles(() => {
@@ -43,7 +43,7 @@ module.exports = function(app) {
 		}
 	});
 
-	app.get('/delete-pack', (req, res) => {
+	app.get('/delete-folder', (req, res) => {
 		if((req.session.pack) && (req.session.key)){
 			const encryptPack = new EncryptPack(req.session.pack, req.session.key);
 			encryptPack.deleteEncryptedFiles(() => {
