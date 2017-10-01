@@ -21,12 +21,12 @@ module.exports = class EncryptPack{
 	}
 
 	get encryptedPack() {
-		let folderName = md5(this._pack + this._key);
+		let folderName = md5(md5(this._pack) + md5(this._key));
 		return `${this.encryptDir}/${folderName}`;
 	}
 
 	get decryptedPack() {
-		let folderName = md5(this._pack + this._key);
+		let folderName = md5(md5(this._pack) + md5(this._key));
 		return `${this.decryptDir}/${folderName}`;
 	}
 
