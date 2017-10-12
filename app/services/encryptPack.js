@@ -39,6 +39,7 @@ module.exports = class EncryptPack{
 	}
 
 	encrypt (files, callback) {
+		this._createFolderIfNotExist(this.encryptDir);
 		this._createFolderIfNotExist(this.encryptedPack);
 		if(!files || !files.length){
 			callback ? callback() : null;
@@ -63,21 +64,25 @@ module.exports = class EncryptPack{
 
 	decrypt (callback) {
 		fs.readdir(this.encryptedPack, (err, files) => {
-
 			if(!files || !files.length){
 				callback ? callback() : null;
 				return;
 			}
-
+			this._createFolderIfNotExist(this.decryptDir);
 			this._createFolderIfNotExist(this.decryptedPack);
 			files.forEach( (item, index) => {
 				const cryptr = new Cryptr(this._key);
 				const decryptedFileName = cryptr.decrypt(item);
-				encryptor.decryptFile(`${this.encryptedPack}/${item}`, `${this.decryptedPack}/${decryptedFileName}`, this._key, () => {
-					if(index + 1 === files.length){
-						callback ? callback() : null;
+				encryptor.decryptFile(
+					`${this.encryptedPack}/${item}`,
+					`${this.decryptedPack}/${decryptedFileName}`,
+					this._key,
+					() => {
+						if(index + 1 === files.length){
+							callback ? callback() : null;
+						}
 					}
-				});
+				);
 			});
 		});
 	}
@@ -105,7 +110,10 @@ module.exports = class EncryptPack{
 		this._deleteDecryptedFile(fileName);
 		let fileNameEncrypted = cryptr.encrypt(fileName);
 		let newFileNameEncrypted = cryptr.encrypt(newName);
-		fs.renameSync(`${this.encryptedPack}/${fileNameEncrypted}`, `${this.encryptedPack}/${newFileNameEncrypted}`);
+		fs.renameSync(
+			`${this.encryptedPack}/${fileNameEncrypted}`,
+			`${this.encryptedPack}/${newFileNameEncrypted}`
+		);
 		callback ? callback() : null;
 	}
 
