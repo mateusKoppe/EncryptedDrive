@@ -12,9 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "cryptr": "^2.0.0",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
     "express-load": "^1.1.16",
+    "express-session": "^1.15.6",
     "file-encryptor": "^0.1.1",
     "http": "0.0.0",
     "md5": "^2.2.1",

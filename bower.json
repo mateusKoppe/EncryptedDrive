@@ -14,5 +14,9 @@
     "app/assets/bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "font-awesome": "^4.7.0",
+    "bootstrap": "v4.0.0-beta"
+  }
 }
