@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "linter": "eslint app || true"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "linter": "eslint app --fix || true"
   },
   "author": "Mateus Koppe",
   "license": "ISC",
